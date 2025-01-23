@@ -45,3 +45,19 @@ class DBClient {
 		}
 	}
 
+	async nbFiles() {
+		try {
+			const filesCollection = this.db.collection('files');
+			const count = await filesCollection.countDocuments();
+			return count;
+		} catch (error) {
+			console.error('Error fetching file count:', error);
+			return 0;
+		}
+	}
+}
+
+//Create an instance of DBClient
+const dbClient = new DBClient();
+
+module.exports = { dbClient };
