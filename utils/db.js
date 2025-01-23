@@ -1,29 +1,37 @@
 const { MongoClient } = require('mongodb');
 
+// Load environment variables
+const DB_HOST = process.env.DB_HOST || 'localhost';
+const DB_PORT = process.env.DB.PORT || 27017;
+const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
+
 class DBClient {
-	constructor (uri, dbName) {
-		this.uri = uri;
-		this.dbName = dbName;
-		this.client = null;
+	constructor() {
+		const uri = `mongodb://${DB_HOST}:${DB_PORT}`;
+		this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 		this.db = null;
 	}
 
-	// Connect to MongoDb
+	async connect() {
+		if (!this.db) {
+			try {
+				await this.client.db(DB_DATABASE);
+				console.log('Connected to MongoDB');
+			} catch (error) {
+				console.error('Failed to connect to MongoDB', error);
+			}
+		}
+	}
+
 	async isAlive() {
 		try {
-			this.client = new MongoClient(this.uri, {useNewUrlParser: true, useUnifiedTopology: true });
-
-			// connect to server
-			await this.client.connect();
-
-			// select database
-			this.db = this.client.db(this.dbName);
-			console.log('Connected to MongoDB');
-			return true;
-		} catch (err) {
-			console.error('Error connecting to MongoDB', err);
+			await this.connect();
+			const serverStatus = await this.db.command({ ping: 1 });
+			return serverStatus.ok === 1;
+		} catch (error) {
+			console.error('Error checking MongoDB connection:' error);
 			return false;
 		}
 	}
-}
 
+	async nbUsers() {}
