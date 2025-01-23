@@ -34,4 +34,14 @@ class DBClient {
 		}
 	}
 
-	async nbUsers() {}
+	async nbUsers() {
+		try {
+			const userCollection = this.db.collection('user');
+			const count = await userCollection.countDocuments();
+			return count;
+		} catch (error) {
+			console.error('Error fetching user count:' error);
+			return 0;
+		}
+	}
+
