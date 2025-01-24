@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 
 // Load environment variables
 const DB_HOST = process.env.DB_HOST || 'localhost';
-const DB_PORT = process.env.DB.PORT || 27017;
+const DB_PORT = process.env.DB_PORT || 27017;
 const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
 
 class DBClient {
@@ -29,7 +29,7 @@ class DBClient {
 			const serverStatus = await this.db.command({ ping: 1 });
 			return serverStatus.ok === 1;
 		} catch (error) {
-			console.error('Error checking MongoDB connection:' error);
+			console.error('Error checking MongoDB connection:', error);
 			return false;
 		}
 	}
@@ -40,7 +40,7 @@ class DBClient {
 			const count = await userCollection.countDocuments();
 			return count;
 		} catch (error) {
-			console.error('Error fetching user count:' error);
+			console.error('Error fetching user count:', error);
 			return 0;
 		}
 	}
